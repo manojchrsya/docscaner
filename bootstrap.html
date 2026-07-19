@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Crop Demo</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        #preview {
+            max-width: 300px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        #cropImage {
+          max-width:100%;
+        }
+
+        .preview-actions{
+          position:absolute;
+          bottom :10px;
+          right:10px;
+          display:flex;
+          gap:8px;
+          transition:.25s;
+        }
+
+        .position-relative:hover .preview-actions{
+          opacity:1;
+        }
+
+        .preview-actions .btn{
+          width:38px;
+          height:38px;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          box-shadow:0 2px 8px rgba(0,0,0,.2);
+        }
+
+        #cropModal .modal-body {
+          height:70vh;
+          overflow:hidden;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+        }
+
+        #previewModalCanvas {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            border: 1px solid #dee2e6;
+        }
+
+        #previewModal .modal-body{
+            height:80vh;
+            overflow:hidden;
+            background:#f8f9fa;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        #canvasContainer {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #f5f5f5;
+        }
+
+        #canvasContainer:active{
+            cursor:grabbing;
+        }
+
+        #previewModalCanvas {
+            pointer-events: auto;
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+         #scanGallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        #scanGallery .btn-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #scanGallery .scan-thumb {
+            position: relative;
+            width: 220px;
+            height: 320px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        #scanGallery .thumb-canvas {
+            width: 100%;
+            height: 240px;
+
+            object-fit: contain;
+
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        #scanGallery .preview-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #scanGallery .btn-delete {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+
+            width: 28px;
+            height: 28px;
+            padding: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            z-index: 2;
+        }
+
+        .upload-zone {
+            border:2px dashed #0d6efd;
+            border-radius:12px;
+            padding:50px 20px;
+            text-align:center;
+            cursor:pointer;
+            transition:.25s;
+            background:#f8fbff;
+        }
+
+        .upload-zone.dragover {
+            background:#e7f1ff;
+            border-color:#0a58ca;
+            transform:scale(1.01);
+        }
+
+        .upload-icon{
+            font-size:60px;
+            color:#0d6efd;
+        }
+
+    </style>
+</head>
+<body>
+
+<section class="hero py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="badge bg-primary mb-3">
+                    Free Online Document Scanner
+                </span>
+                <h1 class="display-4 fw-bold">
+                    Scan Documents into High-Quality PDFs
+                </h1>
+                <p class="lead text-muted mt-3">
+                    Upload an image, crop the document, automatically enhance it,
+                    and download a professional-quality PDF.
+                    Your files are processed locally in your browser for maximum privacy.
+                </p>
+                <div class="mt-4">
+                    <button class="btn btn-primary btn-lg me-3">
+                        Start Scanning
+                    </button>
+                    <button class="btn btn-outline-secondary btn-lg">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <!-- Hero illustration -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mt-5">
+    <div class="shadow-sm">
+        <div class="card-header pb-0">
+            <ul class="nav nav-tabs card-header-tabs" id="scannerTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-pane" type="button">
+                        <i class="bi bi-cloud-upload"></i> Image Scanner
+                    </button>
+                </li>
+                <!-- <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="camera-tab" data-bs-toggle="tab" data-bs-target="#camera-pane" type="button">
+                        <i class="bi bi-camera"></i> Camera
+                    </button>
+                </li> -->
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <!-- Upload Tab -->
+                <div class="tab-pane fade show active" id="upload-pane">
+                    <div id="dropZone" class="upload-zone">
+                        <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                        <h5 class="mt-3">Drop your document here</h5>
+                        <p class="text-muted">
+                            Drag & Drop image here or choose an option below
+                        </p>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" id="btnBrowse">
+                                <i class="bi bi-folder2-open"></i>
+                                Browse File
+                            </button>
+                            <button class="btn btn-outline-primary" id="btnCamera">
+                                <i class="bi bi-camera"></i>
+                                Camera
+                            </button>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+                    </div>
+                </div>
+                <!-- Camera Tab -->
+                <div class="tab-pane fade" id="camera-pane">
+                    <div class="text-center py-5">
+                        <i class="bi bi-camera display-3 text-primary"></i>
+                        <h4 class="mt-3"> Capture Document </h4>
+                        <p class="text-muted">
+                            Take a photo using your device camera.
+                        </p>
+                        <button class="btn btn-success" id="btnCamera">
+                            <i class="bi bi-camera-fill"></i> Open Camera
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="scanResultCard" class="card shadow-sm mt-4 d-none">
+      <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Scanned Document</h5>
+          <div>
+              <button id="btnDownloadPdf" class="btn btn-success btn-sm me-2">
+                  <i class="bi bi-download"></i> Download PDF
+              </button>
+          </div>
+      </div>
+      <div class="card-body bg-light" id="scanGallery">
+      </div>
+    </div>
+</div>
+
+<!-- Crop Modal -->
+<div class="modal fade" id="cropModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:900px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop Image</h5>
+                <button class="btn-close" data-bs-dismiss="modal"> </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="cropImage">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal"> Cancel</button>
+                <button class="btn btn-primary" id="btnCrop"> Crop Image</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="previewModal">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:900px;">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title">Preview Document</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center align-items-center bg-light">
+        <!-- <img id="previewImage" class="preview-image"> -->
+            <div id="canvasContainer">
+                <canvas id="previewModalCanvas"></canvas>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+
+<script>
+
+$(function () {
+
+    let cropper = null;
+    const modal = new bootstrap.Modal($('#cropModal')[0]);
+
+    $("#dropZone").on("dragover", function(e){
+        e.preventDefault();
+        $(this).addClass("dragover");
+    }).on("dragleave", function(){
+        $(this).removeClass("dragover");
+    }).on("drop", function(e){
+        e.preventDefault();
+        $(this).removeClass("dragover");
+        const files = e.originalEvent.dataTransfer.files;
+        handleFiles(files);
+    });
+
+    // Upload image
+    $('#imageInput').on('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        window.currentFileName = file.name;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            $('#cropImage').attr('src', e.target.result);
+            modal.show();
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Initialize Cropper
+    $('#cropModal').on('shown.bs.modal', function () {
+        // $("#btnBrowse").trigger("focus");
+
+        cropper = new Cropper($('#cropImage')[0], {
+            viewMode: 1,
+            responsive: true,
+            restore: false,
+            autoCropArea: 0.9,
+            checkOrientation: false,
+            background: false
+        });
+    });
+
+    // Destroy Cropper
+    $('#cropModal').on('hidden.bs.modal', function () {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+    });
+
+    // Crop image
+    $('#btnCrop').click(function () {
+        const canvas = cropper.getCroppedCanvas({ width: 1800, height: 1800, imageSmoothingEnabled: true, imageSmoothingQuality: "high" });
+        const currentThumnail = addThumbnail(canvas, window.currentFileName);
+        processScan(canvas, currentThumnail);
+
+        $("#scanResultCard").removeClass("d-none");
+        if ($("#scanGallery .scan-thumb").length === 0) {
+            $("#scanResultCard").addClass("d-none");
+        }
+        modal.hide();
+    });
+
+    $(document).on("click", ".btn-download", function () {
+        const $thumb = $(this).closest(".scan-thumb");
+        const canvas = $thumb.find(".thumb-canvas")[0];
+        const fileName = $thumb.data("file").replace(/\.[^/.]+$/, "");
+        downloadPdf([canvas], fileName);
+    });
+
+    let panzoom = null;
+    let wheelHandler = null;
+    const previewModal=new bootstrap.Modal($('#previewModal')[0]);
+
+    $(document).on("click", ".btn-preview", function () {
+        const sourceCanvas = $(this).closest(".scan-thumb").find(".thumb-canvas")[0];
+        const targetCanvas = $("#previewModalCanvas")[0];
+
+        targetCanvas.width = sourceCanvas.width;
+        targetCanvas.height = sourceCanvas.height;
+
+        targetCanvas.getContext("2d").drawImage(sourceCanvas, 0, 0);
+        previewModal.show();
+    });
+
+    $(document).on("click", ".btn-delete", function () {
+        // Remove the thumbnail
+        $(this).closest(".scan-thumb").remove();
+        // Hide the scanned documents card if no thumbnails remain
+        if ($("#scanGallery .scan-thumb").length === 0) {
+            $("#scanResultCard").addClass("d-none");
+        }
+    });
+
+    $('#previewModal').on('shown.bs.modal', function () {
+        if (panzoom) { panzoom.destroy(); }
+        if (wheelHandler) {
+            container.removeEventListener('wheel', wheelHandler);
+        }
+
+        requestAnimationFrame(function () {
+            const container = document.getElementById('canvasContainer');
+            panzoom = Panzoom(container, {
+                maxScale: 6,
+                minScale: 1,
+                cursor: 'grab',
+                step: 0.2
+            });
+
+            container.addEventListener('wheel', function (e) {
+                e.preventDefault();
+                panzoom.zoomWithWheel(e);  // pass the native event directly, not jQuery's wrapper
+            }, { passive: false });
+        })
+    });
+
+    $("#previewModal").on("hidden.bs.modal", function () {
+        if (panzoom) {
+            panzoom.reset({ animate: false });
+        }
+    });
+
+    $("#btnBrowse").click(function () {
+        $("#imageInput").click();
+    });
+
+    $("#btnCamera").click(function () {
+        $("#cameraInput").click();
+    });
+
+    function processScan(inputCanvas, thumbCanvas) {
+      if (typeof cv === "undefined") {
+          alert("OpenCV is still loading.");
+          return;
+      }
+      let src = cv.imread(inputCanvas);
+
+      let gray = new cv.Mat();
+      let blur = new cv.Mat();
+      let sharpen = new cv.Mat();
+      let thresh = new cv.Mat();
+      cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+      cv.bilateralFilter(gray, blur, 9, 75, 75, cv.BORDER_DEFAULT);
+
+      let kernel = cv.matFromArray(3, 3, cv.CV_32F, [0,-1,0, -1,5,-1, 0,-1,0]);
+
+      cv.filter2D(blur, sharpen, cv.CV_8U, kernel);
+
+      cv.adaptiveThreshold(sharpen, thresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 8);
+      // cv.imshow("previewCanvas", thresh);
+      cv.imshow(thumbCanvas, thresh);
+
+      src.delete();
+      gray.delete();
+      blur.delete();
+      sharpen.delete();
+      thresh.delete();
+      kernel.delete();
+    }
+
+    $("#imageInput").on("change", function(){
+        handleFiles(this.files);
+    });
+
+    $("#cameraInput").on("change", function(){
+        handleFiles(this.files);
+    });
+
+    $("#btnDownloadPdf").on("click", function () {
+        const canvases = $("#scanGallery .thumb-canvas").map(function () {
+            return this;
+        }).get();
+        downloadPdf(canvases);
+    });
+
+    function downloadPdf(canvases, fileName = "scanned-document") {
+
+        if (!canvases.length) {
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF({orientation: "portrait", unit: "mm", format: "a4" });
+
+        canvases.forEach((canvas, index) => {
+            addCanvasToPdf(pdf, canvas, index > 0);
+        });
+
+        pdf.save(`${fileName}-${Date.now()}.pdf`);
+    }
+
+    function handleFiles(files){
+        Array.from(files).forEach(function(file){
+            if(!file.type.startsWith("image/")){
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e){
+                $("#cropImage").attr("src", e.target.result);
+                currentFile = file;
+                $('#cropModal').show();
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function addCanvasToPdf(pdf, canvas, addNewPage = false) {
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+        const width = canvas.width * ratio;
+        const height = canvas.height * ratio;
+        const x = (pageWidth - width) / 2;
+        const y = (pageHeight - height) / 2;
+
+        if (addNewPage) {
+            pdf.addPage();
+        }
+        pdf.addImage(canvas.toDataURL("image/png", 1.0), "PNG", x, y, width, height, undefined, "FAST");
+    }
+
+    function addThumbnail(sourceCanvas, fileName) {
+        const $thumb = $(`
+            <div class="scan-thumb position-relative d-inline-block">
+                <button class="btn btn-danger btn-sm btn-delete" title="Delete">
+                    <i class="bi bi-x-lg"></i>
+                </button>    
+                <canvas class="thumb-canvas"></canvas>
+                <div class="preview-actions">
+                    <button class="btn btn-primary btn-sm btn-preview">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-success btn-sm btn-download">
+                        <i class="bi bi-download"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+
+        const canvas = $thumb.find(".thumb-canvas")[0];
+        canvas.width = sourceCanvas.width;
+        canvas.height = sourceCanvas.height;
+        canvas.getContext("2d").drawImage(sourceCanvas, 0, 0);
+        
+        $thumb.data("file", fileName);
+            
+        $("#scanGallery").append($thumb);
+        return canvas;
+    }
+
+});
+
+</script>
+
+</body>
+</html>
