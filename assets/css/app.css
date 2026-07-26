@@ -1,104 +1,46 @@
-#preview {
-    max-width: 300px;
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    padding: 5px;
+/* Cropper image constraint */
+#cropImage { max-width: 100%; display: block; }
+
+/* Crop modal body */
+#cropModalBody {
+    height: 70vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#cropImage {
-  max-width:100%;
-}
-
-.preview-actions{
-  position:absolute;
-  bottom :10px;
-  right:10px;
-  display:flex;
-  gap:8px;
-  transition:.25s;
-}
-
-.position-relative:hover .preview-actions{
-  opacity:1;
-}
-
-.preview-actions .btn{
-  width:38px;
-  height:38px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.2);
-}
-
-#cropModal .modal-body {
-  height:70vh;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
+/* Preview modal canvas */
 #previewModalCanvas {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 100%;
     width: auto;
     height: auto;
+    display: block;
     border: 1px solid #dee2e6;
+    pointer-events: auto;
 }
 
-#previewModal .modal-body{
-    height:80vh;
-    overflow:hidden;
-    background:#f8f9fa;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
+/* Panzoom container */
 #canvasContainer {
     width: 100%;
     height: 100%;
     overflow: hidden;
     position: relative;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: #f5f5f5;
+    cursor: grab;
 }
+#canvasContainer:active { cursor: grabbing; }
 
-#canvasContainer:active{
-    cursor:grabbing;
-}
-
-#previewModalCanvas {
-    pointer-events: auto;
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-}
-
-  #scanGallery {
+/* Scan gallery */
+#scanGallery {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     align-items: flex-start;
-}
-
-#scanGallery .btn-delete {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #scanGallery .scan-thumb {
@@ -118,9 +60,7 @@
 #scanGallery .thumb-canvas {
     width: 100%;
     height: 240px;
-
     object-fit: contain;
-
     border-radius: 6px;
     background: #f8f9fa;
 }
@@ -136,37 +76,68 @@
     position: absolute;
     top: 8px;
     right: 8px;
-
     width: 28px;
     height: 28px;
     padding: 0;
-
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     z-index: 2;
 }
 
-/* .upload-zone {
-    border:2px dashed #0d6efd;
-    border-radius:12px;
-    padding:50px 20px;
-    text-align:center;
-    cursor:pointer;
-    transition:.25s;
-    background:#f8fbff;
+/* Upload zone */
+.upload-zone {
+    border: 2px dashed #3b82f6;
+    border-radius: 12px;
+    padding: 50px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: .25s;
+    background: #f8fbff;
 }
-
 .upload-zone.dragover {
-    background:#e7f1ff;
-    border-color:#0a58ca;
-    transform:scale(1.01);
+    background: #e7f1ff;
+    border-color: #1d4ed8;
+    transform: scale(1.01);
+}
+.upload-icon { font-size: 60px; color: #3b82f6; }
+
+/* ── Responsive: hero grid + step/feature grids ── */
+@media (max-width: 768px) {
+    section > .max-w-5xl[style*="grid-template-columns:1fr 1fr"],
+    section > div > .max-w-5xl[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    /* how-it-works 4-col → 2-col */
+    #sec-how div[style*="grid-template-columns:repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    /* connector arrows: hide on small screens */
+    #sec-how span[style*="position:absolute"] {
+        display: none !important;
+    }
+    /* features 3-col → 2-col */
+    div[style*="grid-template-columns:repeat(3,1fr)"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+@media (max-width: 480px) {
+    #sec-how div[style*="grid-template-columns:repeat(4"],
+    div[style*="grid-template-columns:repeat(3,1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 
-.upload-icon{
-    font-size:60px;
-    color:#0d6efd;
-} */
+/* Modal backdrop */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+}
+.modal-backdrop.open { display: flex; }
+body.modal-open { overflow: hidden; }

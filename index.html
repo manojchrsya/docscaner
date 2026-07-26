@@ -1,216 +1,357 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>DocScan - Free Online Document Scanner</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Tailwind via CDN (for quick mockup only) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./assets/css/app.css" rel="stylesheet">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Crop Demo</title>
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" rel="stylesheet">
-    
-  </head>
-  <body class="min-h-screen bg-gray-100 flex flex-col">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div>
-          <h1 class="text-xl font-semibold text-gray-800">DocScan</h1>
-          <p class="text-xs text-gray-500">
-            Upload clean images and download scanned documents
-          </p>
-        </div>
-        <nav>
-          <button class="text-sm text-blue-600 hover:text-blue-800">
-            History
-          </button>
-        </nav>
-      </div>
-    </header>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="./assets/css/app.css">
 
-    <!-- Main content -->
-    <main class="flex-1">
-      <div class="max-w-5xl mx-auto px-4 py-8">
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-800 mb-4">
-            Scan a new document
-          </h2>
+</head>
+<body class="bg-gray-50 min-h-screen">
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Left column: Upload + options -->
-            <section>
-              <!-- Upload area -->
-              <div class="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 transition border-gray-300 bg-gray-50">
-                <div class="flex flex-col items-center">
-                  <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mb-2">
-                    <span class="text-blue-500 text-2xl">📄</span>
-                  </div>
-                  <p class="text-sm text-gray-700">
-                    Drop an image here or
-                    <span class="text-blue-600" id="btnBrowse">click to upload</span>
-                  </p>
-                  <p class="text-xs text-gray-400 mt-1">
-                    Supported: JPG, PNG (PDF export after scan)
-                  </p>
-                  <input type="file" id="imageInput" accept="image/*" hidden>
-                  <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
-                  <!-- <div id="dropZone" class="upload-zone">
-                      <i class="bi bi-cloud-arrow-up upload-icon"></i>
-                      <h5 class="mt-3">Drop your document here</h5>
-                      <p class="text-muted">
-                          Drag & Drop image here or choose an option below
-                      </p>
-                      <div class="mt-3">
-                          <button class="btn btn-primary" id="btnBrowse">
-                              <i class="bi bi-folder2-open"></i>
-                              Browse File
-                          </button>
-                          <button class="btn btn-outline-primary" id="btnCamera">
-                              <i class="bi bi-camera"></i>
-                              Camera
-                          </button>
-                      </div>
-                      <input type="file" id="imageInput" accept="image/*" hidden>
-                      <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
-                    </div> -->
-                </div>
-              </div>
-
-              <!-- Selected file info (placeholder) -->
-              <div class="mt-3 text-xs text-gray-600">
-                <p class="italic text-gray-400">
-                  Selected file details will appear here.
-                </p>
-              </div>
-
-              <!-- Options -->
-              <div class="mt-4">
-                <label class="block text-xs font-medium text-gray-700 mb-1">
-                  Mode
-                </label>
-                <select
-                  class="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option>Standard</option>
-                  <option>High contrast</option>
-                </select>
-              </div>
-
-              <div class="mt-3 flex items-center">
-                <input
-                  id="generatePdf"
-                  type="checkbox"
-                  checked
-                  class="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                />
-                <label for="generatePdf" class="ml-2 text-xs text-gray-700">
-                  Also generate PDF
-                </label>
-                </div>
-
-              <!-- Scan button -->
-              <div class="mt-5">
-                <button class="inline-flex items-center px-4 py-2 rounded text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-                  Scan Document
-                </button>
-              </div>
-            </section>
-
-            <!-- Right column: Preview -->
-            <section class="border border-gray-200 rounded-lg p-3 bg-gray-50">
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="text-sm font-medium text-gray-700">Preview</h3>
-                <div class="flex text-xs">
-                  <button
-                    class="px-2 py-1 rounded-l border text-xs bg-white border-blue-500 text-blue-600"
-                  >
-                    Original
-                  </button>
-                  <button
-                    class="px-2 py-1 rounded-r border text-xs bg-gray-100 border-gray-300 text-gray-500"
-                  >
-                    Scanned
-                  </button>
-                </div>
-              </div>
-
-              <!-- Preview box -->
-              <div
-                class="h-64 flex items-center justify-center text-xs text-gray-400 border border-dashed border-gray-300 rounded bg-white"
-              >
-                Preview will appear here after scanning.
-              </div>
-
-              <!-- Download buttons (placeholder) -->
-              <div class="mt-3 flex flex-wrap gap-2">
-                <button
-                  class="px-3 py-1 rounded text-xs font-medium text-white bg-green-600 hover:bg-green-700"
-                >
-                  Download Image
-                </button>
-                <button
-                  class="px-3 py-1 rounded text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  Download PDF
-                </button>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </main>
-  </body>
-
-  <!-- Crop Modal -->
-  <div id="cropModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-      <div class="relative w-full max-w-5xl mx-4 bg-white rounded-xl shadow-xl">
-          <div class="flex items-center justify-between px-6 py-4 border-b">
-              <h2 class="text-lg font-semibold">Crop Image</h2>
-              <button id="btnCloseCrop" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">
-                  &times;
-              </button>
-          </div>
-          <!-- Body -->
-          <div class="p-6 flex justify-center bg-gray-50">
-              <img id="cropImage" class="max-w-full max-h-[70vh] object-contain">
-          </div>
-          <!-- Footer -->
-          <div class="flex justify-end gap-3 px-6 py-4 border-t">
-              <button id="btnCancelCrop" class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100">
-                  Cancel
-              </button>
-              <button id="btnCrop" class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-                  Crop Image
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <div class="modal fade" id="previewModal">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:900px;">
-      <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Preview Document</h5>
-            <button class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body d-flex justify-content-center align-items-center bg-light">
-          <!-- <img id="previewImage" class="preview-image"> -->
-              <div id="canvasContainer">
-                  <canvas id="previewModalCanvas"></canvas>
-              </div>
-        </div>
-      </div>
+<!-- ── HEADER ── -->
+<!-- <header class="bg-white shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div>
+        <h1 class="text-xl font-semibold text-gray-800">DocScan</h1>
+        <p class="text-xs text-gray-500">Free Online Document Scanner Converts Images into High-Quality PDFs.</p>
     </div>
-  </div>
+    <nav>
+        <button class="text-sm text-blue-600 hover:text-blue-800">History</button>
+    </nav>
+    </div>
+</header> -->
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ══════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════ -->
+<section class="bg-white border-b border-gray-100" style="padding: 2rem 1.5rem 3.5rem;">
+    <div class="max-w-5xl mx-auto" style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script async src="https://docs.opencv.org/4.x/opencv.js"></script>
-  <script src="./assets/js/app.js"></script>
+        <!-- Left: copy -->
+        <div>
+            <!-- Badge -->
+            <div style="display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:500; padding:4px 12px; border-radius:20px; margin-bottom:1.25rem; border:1px solid #bfdbfe;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#1d4ed8;display:inline-block;"></span>
+                Free · No sign-up · Runs in your browser
+            </div>
+            <h1 style="font-size:clamp(28px,4vw,40px); font-weight:700; line-height:1.15; color:#111827; letter-spacing:-0.5px; margin-bottom:1rem;">
+                Turn photos into <span style="color:#2563eb;">scanned PDFs</span> instantly
+            </h1>
+            <p style="font-size:16px; color:#6b7280; line-height:1.75; margin-bottom:1.75rem;">
+                Upload an image, crop and enhance it with OpenCV, then download a clean, professional-quality PDF —
+                all processed locally. Your documents never leave your device.
+            </p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button
+                    id="btnHeroStart"
+                    onclick="document.getElementById('dropZone').scrollIntoView({behavior:'smooth'})"
+                    class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition text-sm"
+                >
+                    Start scanning
+                </button>
+                <button
+                    onclick="document.getElementById('sec-how').scrollIntoView({behavior:'smooth'})"
+                    class="px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-lg transition text-sm"
+                >
+                    How it works ↓
+                </button>
+            </div>
+        </div>
 
+        <!-- Right: illustration card -->
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:14px; padding:1.25rem; display:flex; flex-direction:column; gap:10px;">
+
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px;">
+                <span style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:#dcfce7;color:#15803d;border:1px solid #bbf7d0;">🔒 100% local processing</span>
+                <span style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;">OpenCV enhanced</span>
+            </div>
+
+            <!-- Step cards -->
+            <div style="background:#fff; border:1px solid #e5e7eb; border-radius:9px; padding:12px 14px; display:flex; align-items:center; gap:12px;">
+                <div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✂️</div>
+                <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;color:#111827;">invoice-march.jpg</div>
+                    <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Crop → auto-enhance</div>
+                </div>
+                <span style="color:#9ca3af;font-size:16px;">›</span>
+            </div>
+
+            <div style="background:#fff; border:1px solid #e5e7eb; border-radius:9px; padding:12px 14px; display:flex; align-items:center; gap:12px;">
+                <div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🖨️</div>
+                <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;color:#111827;">invoice-march_scan.png</div>
+                    <div style="font-size:11px;color:#9ca3af;margin-top:2px;">High-contrast · B&W · Sharp</div>
+                </div>
+                <span style="color:#9ca3af;font-size:16px;">›</span>
+            </div>
+
+            <div style="background:#fff; border:1px solid #e5e7eb; border-radius:9px; padding:12px 14px; display:flex; align-items:center; gap:12px;">
+                <div style="width:36px;height:36px;border-radius:8px;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📄</div>
+                <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;color:#111827;">invoice-march.pdf</div>
+                    <div style="font-size:11px;color:#9ca3af;margin-top:2px;">A4 PDF · Ready to share</div>
+                </div>
+                <span style="color:#9ca3af;font-size:16px;">⬇</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ── MAIN ── -->
+<div class="max-w-5xl mx-auto px-4 mt-8">
+
+    <!-- Upload card -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <!-- Tab header -->
+        <div class="border-b border-gray-200 px-4">
+            <nav class="flex gap-0" id="scannerTabs">
+                <button
+                    class="tab-btn px-5 py-3 text-sm font-medium border-b-2 border-blue-600 text-blue-600 -mb-px transition"
+                    data-target="upload-pane"
+                >
+                    <i class="bi bi-cloud-upload mr-1"></i> Image Scanner
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            <!-- Upload pane -->
+            <div id="upload-pane">
+                <div id="dropZone" class="upload-zone">
+                    <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                    <h5 class="mt-3 text-lg font-semibold text-gray-800">Drop your document here</h5>
+                    <p class="text-gray-400 mt-1 text-sm">Drag & Drop image here or choose an option below</p>
+                    <div class="mt-4 flex justify-center gap-3">
+                        <button
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition"
+                            id="btnBrowse"
+                        >
+                            <i class="bi bi-folder2-open mr-1"></i> Browse File
+                        </button>
+                        <button
+                            class="px-4 py-2 border border-blue-600 text-blue-600 hover:bg-blue-50 text-sm font-semibold rounded-lg transition"
+                            id="btnCamera"
+                        >
+                            <i class="bi bi-camera mr-1"></i> Camera
+                        </button>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" hidden multiple>
+                    <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scan result card -->
+    <div id="scanResultCard" class="bg-white rounded-xl shadow-sm mt-6 hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h5 class="text-base font-semibold text-gray-800">Scanned Documents</h5>
+            <div class="flex gap-2">
+                <button
+                    id="btnDownloadPdf"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition"
+                >
+                    <i class="bi bi-download"></i> Download PDF
+                </button>
+            </div>
+        </div>
+        <div class="p-5 bg-gray-50 min-h-24" id="scanGallery"></div>
+    </div>
+
+</div><!-- /container -->
+
+
+<!-- ══════════════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════════════ -->
+<section id="sec-how" style="padding:3.5rem 1.5rem; background:#f9fafb; border-bottom:1px solid #e5e7eb;">
+    <div class="max-w-5xl mx-auto">
+        <p style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:.4rem;">How it works</p>
+        <h2 style="font-size:24px;font-weight:700;color:#111827;margin-bottom:2rem;">Four steps to a perfect scan</h2>
+
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;position:relative;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#eff6ff;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:.75rem;">1</div>
+                <div style="font-size:22px;margin-bottom:.6rem;">📂</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Upload image</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.55;">Drop a JPG, PNG, or WEBP. Drag & drop or click to browse. Multiple files supported.</div>
+                <span style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:#d1d5db;font-size:20px;z-index:1;">›</span>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;position:relative;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#f0fdf4;color:#15803d;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:.75rem;">2</div>
+                <div style="font-size:22px;margin-bottom:.6rem;">✂️</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Crop & straighten</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.55;">Select the document area. Lock to A4, Letter, or a custom ratio with live pixel readout.</div>
+                <span style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:#d1d5db;font-size:20px;z-index:1;">›</span>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;position:relative;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#fffbeb;color:#b45309;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:.75rem;">3</div>
+                <div style="font-size:22px;margin-bottom:.6rem;">🖨️</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Auto-enhance</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.55;">OpenCV sharpens edges, removes shadows, and applies adaptive thresholding for clean B&W output.</div>
+                <span style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:#d1d5db;font-size:20px;z-index:1;">›</span>
+            </div>
+
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:28px;height:28px;border-radius:50%;background:#f5f3ff;color:#6d28d9;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:.75rem;">4</div>
+                <div style="font-size:22px;margin-bottom:.6rem;">⬇️</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Download</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.55;">Save as PNG or export a multi-page PDF. Zoom and inspect in full-screen before saving.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════════════════ -->
+<section style="padding:3.5rem 1.5rem; background:#fff; border-bottom:1px solid #e5e7eb;">
+    <div class="max-w-5xl mx-auto">
+        <p style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:.4rem;">Features</p>
+        <h2 style="font-size:24px;font-weight:700;color:#111827;margin-bottom:2rem;">Everything you need, nothing you don't</h2>
+
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">🔒</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Private by design</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">All processing runs in your browser via WebAssembly. No files are uploaded to any server, ever.</div>
+            </div>
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">🔬</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">OpenCV enhanced</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">Bilateral filtering, unsharp masking, and adaptive thresholding produce crisp, legible scans.</div>
+            </div>
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#fffbeb;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">✂️</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Precision crop tool</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">Drag handles, aspect ratio lock (A4, Letter, 4:3), and a live pixel readout for exact selections.</div>
+            </div>
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">📑</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Multi-page PDF</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">Queue multiple images and export them as a single, properly-paginated PDF in one click.</div>
+            </div>
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">🔍</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">Zoom & inspect</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">Full-screen preview with pinch-to-zoom and pan so you can verify quality before saving.</div>
+            </div>
+
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;">
+                <div style="width:38px;height:38px;border-radius:9px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem;">⚡</div>
+                <div style="font-size:13px;font-weight:600;color:#111827;margin-bottom:.35rem;">No account needed</div>
+                <div style="font-size:12px;color:#6b7280;line-height:1.6;">Open the page, upload, done. No sign-up, no email, no subscription — free forever.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     PRIVACY BANNER
+════════════════════════════════════════════════════ -->
+<div style="padding:2rem 1.5rem; background:#f9fafb; border-bottom:1px solid #e5e7eb;">
+    <div class="max-w-5xl mx-auto">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:16px;">
+            <span style="font-size:30px;flex-shrink:0;">🛡️</span>
+            <div>
+                <div style="font-size:14px;font-weight:600;color:#15803d;margin-bottom:3px;">Your files never leave your device</div>
+                <div style="font-size:13px;color:#166534;line-height:1.6;opacity:.85;">
+                    DocScan uses WebAssembly (OpenCV.js) to process images entirely inside your browser.
+                    Nothing is sent to a server — not the image, not the PDF, not any metadata.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     CROP MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="cropModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full mx-4 overflow-hidden flex flex-col" style="max-width:900px; max-height:95vh">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
+            <h5 class="text-base font-semibold text-gray-800">Crop Image</h5>
+            <button
+                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition text-xl font-bold"
+                id="cropModalClose"
+            >
+                &times;
+            </button>
+        </div>
+        <!-- Body -->
+        <div id="cropModalBody" class="flex-1 min-h-0 p-4 bg-gray-900 flex items-center justify-center overflow-hidden">
+            <img id="cropImage" alt="Crop source">
+        </div>
+        <!-- Footer -->
+        <div class="flex items-center justify-end gap-2 px-5 py-4 border-t border-gray-100 shrink-0">
+            <button
+                class="px-4 py-2 border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition"
+                id="cropCancel"
+            >
+                Cancel
+            </button>
+            <button
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition"
+                id="btnCrop"
+            >
+                Crop Image
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     PREVIEW MODAL
+════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="previewModal">
+    <div class="bg-white rounded-2xl shadow-2xl w-full mx-4 overflow-hidden flex flex-col" style="max-width:900px; max-height:95vh">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
+            <h5 class="text-base font-semibold text-gray-800">Preview Document</h5>
+            <button
+                class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition text-xl font-bold"
+                id="previewModalClose"
+            >
+                &times;
+            </button>
+        </div>
+        <!-- Body: 80vh panzoom area -->
+        <div class="flex-1 min-h-0 bg-gray-100 flex items-center justify-center overflow-hidden" style="height:80vh">
+            <div id="canvasContainer">
+                <canvas id="previewModalCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ── SCRIPTS ── -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+<script src="./assets/js/app.js"></script>
+
+</body>
 </html>
