@@ -141,9 +141,8 @@ $(function () {
                 if (panzoom) { panzoom.destroy(); panzoom = null; }
                 const container = document.getElementById('canvasContainer');
                 panzoom = Panzoom(container, {
-                    maxScale: 6,
                     minScale: 1,
-                    contain: 'outside',
+                    maxScale: 6,
                     cursor: 'grab',
                     step: 0.2,
                 });
