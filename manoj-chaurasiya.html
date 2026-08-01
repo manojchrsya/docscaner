@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classic Resume</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #1a3a5c;      /* dark navy — header bg */
+    --rule:   #1a3a5c;      /* section rule color */
+    --text:   #1c1c1c;
+    --muted:  #000000;
+    --light:  #777777;
+    --page-w: 780px;
+  }
+
+  body {
+    background: #e8e8e8;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    width: var(--page-w);
+    min-height: 1100px;
+    margin: 32px auto;
+    background: #fff;
+    box-shadow: 0 4px 32px rgba(0,0,0,.18);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--accent);
+    padding: 28px 36px 24px;
+    color: #fff;
+  }
+  .header-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    color: #fff;
+  }
+  .header-title {
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.75);
+    margin-bottom: 14px;
+  }
+  .header-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,.85);
+  }
+  .header-contact span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .header-contact svg {
+    width: 12px;
+    height: 12px;
+    fill: rgba(255,255,255,.65);
+    flex-shrink: 0;
+  }
+
+  /* ── BODY ── */
+  .body { padding: 24px 36px 36px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 20px; }
+  .section-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--rule);
+    margin-bottom: 12px;
+  }
+
+  /* ── SUMMARY ── */
+  .summary p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    text-align: justify;
+  }
+
+  /* ── EXPERIENCE ── */
+  .entry { margin-bottom: 14px; }
+  .entry:last-child { margin-bottom: 0; }
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .entry-role {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .entry-date {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--light);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .entry-org {
+    font-size: 14.5px;
+    font-weight: 400;
+    color: var(--accent);
+    font-style: italic;
+    margin-bottom: 5px;
+    text-decoration: none;
+  }
+  .entry-location {
+    font-size: 11.5px;
+    color: var(--light);
+  }
+  .entry ul {
+    padding-left: 16px;
+    margin-top: 5px;
+  }
+  .entry ul li {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 3px;
+    line-height: 1.6;
+  }
+  .entry ul li::marker { color: var(--accent); }
+
+  /* ── EDUCATION ── */
+  .edu-entry { margin-bottom: 12px; }
+  .edu-entry:last-child { margin-bottom: 0; }
+  .edu-degree {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .edu-school {
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .edu-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    color: var(--light);
+    margin-top: 1px;
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+  .skill-group { }
+  .skill-group-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .skill-tag {
+    font-size: 11px;
+    color: var(--muted);
+    background: #f0f3f7;
+    border: 1px solid #dde2ea;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  /* ── CERTIFICATIONS / PROJECTS ── */
+  .cert-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 7px;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed #e8e8e8;
+  }
+  .cert-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .cert-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .cert-issuer {
+    font-size: 13px;
+    color: var(--accent);
+  }
+  .cert-date {
+    font-size: 11.5px;
+    color: var(--light);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── TWO-COLUMN BOTTOM ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: #eaeaea;
+    margin: 4px 0 20px;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; }
+    .page { margin: 0; box-shadow: none; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-name">Manoj Chaurasiya</div>
+    <div class="header-title">Engineering Manager | Technical Lead</div>
+    <div class="header-contact">
+      <span>
+        <!-- Email icon -->
+        <svg viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+        manojchrsya@gmail.com
+      </span>
+      <span>
+        <!-- Phone icon -->
+        <svg viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
+        +91 9987492873
+      </span>
+      <span>
+        <!-- Location icon -->
+        <svg viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+        Mumbai, Maharashtra, India
+      </span>
+      <span>
+        <!-- LinkedIn icon -->
+        <svg viewBox="0 0 24 24"><path d="M19 0H5a5 5 0 00-5 5v14a5 5 0 005 5h14a5 5 0 005-5V5a5 5 0 00-5-5zM8 19H5V8h3v11zM6.5 6.7A1.8 1.8 0 114.7 5a1.8 1.8 0 011.8 1.7zM20 19h-3v-5.6c0-1.3-.5-2.2-1.6-2.2a1.7 1.7 0 00-1.6 1.2 2.2 2.2 0 000 .8V19h-3V8h3v1.5a3.2 3.2 0 012.9-1.6c2.1 0 3.3 1.4 3.3 4.3V19z"/></svg>
+        https://www.linkedin.com/in/manoj-chaurasiya-94305675
+      </span>
+      <span>
+        <!-- GitHub icon -->
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.72-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        https://github.com/manojchrsya
+      </span>
+    </div>
+  </header>
+
+  <!-- ── BODY ── -->
+  <div class="body">
+
+    <!-- SUMMARY -->
+    <div class="section summary">
+      <div class="section-title">Professional Summary</div>
+      <p>
+        Backend engineering leader with 11+ years of experience designing and building
+        high-scale distributed systems for FinTech and banking platforms. currently serving as
+        an Engineering Manager while continuing to lead architecture, backend development,
+        and technical execution for third party API’s and multi-bank integration platforms.
+        Specialized in Node.js, PostgreSQL, Kafka, Redis, AWS and event-driven architectures,
+        with strong expertise in system design, API development, caching, observability, and
+        production reliability. Passionate about solving complex engineering problems,
+        mentoring teams, and delivering scalable, high-performance backend platforms.
+      </p>
+    </div>
+
+        <!-- SKILLS -->
+    <div class="section">
+      <div class="section-title">Skills</div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <div class="skill-group-name">Languages</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">PHP</span>
+            <span class="skill-tag">Vue js</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-name">Frameworks & Libraries</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Adonis Js</span>
+            <span class="skill-tag">Express Js</span>
+            <span class="skill-tag">Fastify</span>
+            <span class="skill-tag">Nuxt Js</span>
+            <span class="skill-tag">Loopback</span>
+          </div>
+        </div>
+        <div class="skill-group" style="margin-top:8px">
+          <div class="skill-group-name">Cloud & DevOps</div>
+          <div class="skill-tags">
+            <span class="skill-tag">AWS</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Kubernetes</span>
+            <span class="skill-tag">Lambda</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">GitHub Actions</span>
+            <span class="skill-tag">CI/CD</span>
+          </div>
+        </div>
+        <div class="skill-group" style="margin-top:8px">
+          <div class="skill-group-name">Databases & Messaging</div>
+          <div class="skill-tags">
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">Redis</span>
+            <span class="skill-tag">Kafka</span>
+            <span class="skill-tag">Elasticsearch</span>
+            <span class="skill-tag">MongoDB</span>
+          </div>
+        </div>
+        <div class="skill-group" style="margin-top:8px">
+          <div class="skill-group-name">Technicals</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Microservices</span>
+            <span class="skill-tag">Distributed Architecture</span>
+            <span class="skill-tag">System Design</span>
+            <span class="skill-tag">Infra Cost Optimization</span>
+            <span class="skill-tag">Debugging</span>
+          </div>
+        </div>
+        <div class="skill-group" style="margin-top:8px">
+          <div class="skill-group-name">Monitoring & Observability</div>
+          <div class="skill-tags">
+            <span class="skill-tag">NewRelic</span>
+            <span class="skill-tag">CloudWatch</span>
+            <span class="skill-tag">Alerts and Dashboards</span>
+            <span class="skill-tag">Elastic APM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="section">
+      <div class="section-title">Work Experience</div>
+
+      <!-- Promotion block: same company, two roles -->
+      <div class="entry">
+
+        <!-- Company header (shared) -->
+        <div class="entry-header" style="margin-bottom:6px;">
+          <div class="entry-org" style="font-style:normal; font-weight:700; font-size:13.5px; color:var(--text);">
+            <a href="https://www.novio.in/" class="entry-org" target="_blank">novio</a> &nbsp;·&nbsp; <span style="font-weight:400; font-size:12px; color:var(--light);">Mumbai, Maharashtra, India</span>
+          </div>
+          <div class="entry-date">Jan 2021 — Present</div>
+        </div>
+
+        <!-- Role 2: Current (promoted) -->
+        <div style="padding-left:14px; border-left:2px solid var(--accent); margin-bottom:10px;">
+          <div class="entry-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="entry-role">Engineering Manager</div>
+              <span style="font-size:10px; font-weight:700; background:#e8f0fe; color:#1a3a5c; padding:1px 7px; border-radius:3px; letter-spacing:.5px; text-transform:uppercase;">Promoted</span>
+            </div>
+            <div class="entry-date">Aug 2025 — Present</div>
+          </div>
+          <ul>
+            <li>Leading a cross-functional engineering POD of 6 personnel.</li>
+            <li>Led the hiring and technical interview process for Tech Support and Software Development roles.</li>
+            <li>Architected scalable APIs and workflows handling high-concurrency onboarding and transaction flows with strict reliability requirements.</li>
+            <li>Led cloud architecture on AWS, including RDS, ElastiCache, EC2, Lambda, improving system reliability and reducing infrastructure cost.</li>
+            <li>Designed observability strategy using NewRelic and logs metrics to detect and prevent production incidents.</li>
+            <li>Managed the tech support team, improved TAT and ensured timely resolution with engineering teams.</li>
+            <li>Own technical architecture, sprint planning, delivery, and production stability for banking integration platform.</li>
+            <li>Mentored engineers on system design, code quality, and best practices to improve team performance and technical excellence.</li>
+          </ul>
+        </div>
+
+        <!-- Role 1: Previous -->
+        <div style="padding-left:14px; border-left:2px solid #d1d5db; margin-bottom:2px;">
+          <div class="entry-header">
+            <div class="entry-role" style="color:var(--muted);">Tech Lead</div>
+            <div class="entry-date">Nov 2021 — Jul 2025</div>
+          </div>
+          <ul>
+            <li>Designed and owned backend architecture for a multi-bank FinTech platform supporting credit cards and personal loan journeys across multiple lenders.</li>
+            <li>Led API performance optimization by tuning PostgreSQL queries and implementing Redis caching, resulting in faster response times and improved database efficiency.</li>
+            <li>Strengthened API reliability and security by introducing rate limiting and scalability enhancements, supporting 1.5M+ daily requests with high availability.</li>
+            <li>Architected a background report processing system to reduce download time using Queues and Kafka.</li>
+            <li>Mentored junior developers through code reviews, pair programming sessions, and internal tech talks.</li>
+            <li>Improved system scalability with asynchronous processing and queue-based architecture.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div class="entry-role">Lead Software Engineer</div>
+          <div class="entry-date">Dec 2016 — Oct 2021</div>
+        </div>
+        <div class="entry-org">Mahindra First Choice Services &nbsp;·&nbsp; <span class="entry-location">Mumbai, Maharashtra, India</span></div>
+        <ul>
+          <li>Analyzed business requirements and translated them into scalable, high-quality technical solutions.</li>
+          <li>Designed and optimized database schemas, secure and high-performance RESTful APIs, and system architecture for scalability and maintainability.</li>
+          <li>Architected and implemented the DearO Admin Panel using Nuxt.js, establishing a scalable and maintainable project structure.</li>
+          <li>Provided technical guidance and mentorship to team members, assisting in solution design, code quality, and troubleshooting.</li>
+          <li>Conducted peer code reviews to enforce coding standards, improve code quality, and promote knowledge sharing across the team.</li>
+          <li>Collaborated with cross-functional teams, including Product, QA and Design to deliver features on time and maintain high engineering standards.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div class="entry-role">Sr. Software Developer</div>
+          <div class="entry-date">Sep 2015 — Dec 2016</div>
+        </div>
+        <div class="entry-org">Ambab &nbsp;·&nbsp; <span class="entry-location">Mumbai, Maharashtra, India</span></div>
+        <ul>
+          <li>Developed RESTful APIs using PHP and MySQL, ensuring high performance and scalability.</li>
+          <li>Designed, developed, and maintained scalable backend services and business-critical features based on functional and technical requirements.</li>
+          <li>Designed and implemented secure, high-performance RESTful APIs for mobile and web applications.</li>
+          <li>Designed and optimized database schemas, API contracts, and system architecture to ensure scalability, maintainability, and performance.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div class="entry-role">PHP Developer</div>
+          <div class="entry-date">May 2014 — Sep 2015</div>
+        </div>
+        <div class="entry-org">PSP Marketing &nbsp;·&nbsp; <span class="entry-location">Mumbai, Maharashtra, India</span></div>
+        <ul>
+          <li>Developed Web applications using PHP and MySQL, ensuring high performance and scalability.</li>
+          <li>Payment gateway integration and transaction management for e-commerce platforms.</li>
+          <li>Designed and optimized database schemas, API contracts, and system architecture to ensure scalability, maintainability, and performance.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <div class="entry-role">PHP Developer</div>
+          <div class="entry-date">Feb 2013 — May 2014</div>
+        </div>
+        <div class="entry-org">Postbox Communication &nbsp;·&nbsp; <span class="entry-location">Mumbai, Maharashtra, India</span></div>
+        <ul>
+          <li>Developed Web applications using PHP and MySQL, ensuring high performance and scalability.</li>
+          <li>Maintained and enhanced existing applications, troubleshooting issues and implementing new features as required.</li>
+          <li>Collaborated with cross-functional teams to gather requirements, design solutions, and deliver high-quality software on time.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Key Projects</div>
+
+      <div class="cert-entry">
+        <div>
+          <div class="cert-name">novio – D2C Secured and Non Secured Credit Card & Rewards Platform</div>
+          <div class="cert-issuer">
+            Built and enhanced a D2C fintech platform enabling customers to apply for FD-backed credit cards, 
+            perform CRIF bureau checks, complete digital onboarding, and redeem reward points for vouchers. 
+            Designed scalable backend services, payment workflows, banking integrations, and observability solutions.
+            <br><strong>Tech Stack:</strong> Node.js, TypeScript, PostgreSQL, Redis, Kafka, AWS, Kubernetes, New Relic
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-entry">
+        <div>
+          <div class="cert-name">Credilio – FinTech Credit Cards & Personal Loans Platform</div>
+          <div class="cert-issuer">
+            Developed and maintained a multi-bank platform integrating credit card and personal loan journeys across banks, NBFCs, and financial partners.
+            Designed REST APIs, optimized database performance, implemented asynchronous processing, and led cloud infrastructure improvements.
+            <br><strong>Tech Stack:</strong> Node.js, PostgreSQL, Redis, Kafka, AWS, Docker, Lambda, Kubernetes, New Relic
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-entry">
+        <div>
+          <div class="cert-name">DearO – Workshop Management System</div>
+          <div class="cert-issuer">
+            Architected and developed a cloud-based workshop management platform for automobile service centers to manage customers, job cards,
+            inventory, invoicing, employee operations, and service workflows.
+            Designed the complete application architecture, database schema, REST APIs, and Admin Panel.
+            <br><strong>Tech Stack:</strong> Node.js, JavaScript, Loopback, Redis, MongoDB, ElasticSearch, Nuxt.js, AWS
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- EDUCATION -->
+    <div class="section">
+      <div class="section-title">Education</div>
+
+      <div class="edu-entry">
+        <div class="edu-degree">Bachelor of Engineering — Computer Science</div>
+        <div class="edu-school">S.S.P.M College of Engineering and Technology, University of Mumbai</div>
+        <div class="edu-meta">
+          <span>Raigad, Maharashtra, India</span>
+          <span>Graduated May 2011 &nbsp;·&nbsp; Scored 61.37%</span>
+        </div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="edu-degree">Higher Secondary Certificate</div>
+        <div class="edu-school">Abhinav Vidya Mandir, Maharashtra Board</div>
+        <div class="edu-meta">
+          <span>Mumbai, Maharashtra, India</span>
+          <span>Apr 2007 &nbsp;·&nbsp; Scored 73.67%</span>
+        </div>
+      </div>
+
+      <div class="edu-entry">
+        <div class="edu-degree">Secondary School Certificate</div>
+        <div class="edu-school">National High School, Maharashtra Board</div>
+        <div class="edu-meta">
+          <span>Mumbai, Maharashtra, India</span>
+          <span>May 2005 &nbsp;·&nbsp; Scored 61.37%</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+</div><!-- /page -->
+</body>
+</html>
